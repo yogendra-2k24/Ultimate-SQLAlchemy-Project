@@ -2,12 +2,12 @@ from sqlalchemy import String, Integer, DECIMAL
 from sqlalchemy.orm import Mapped, mapped_column
 from decimal import Decimal
 from datetime import date
-from sqlAlchemy import Date, func, CheckConstraint
+from sqlalchemy import Date, func, CheckConstraint
 
 from database import Base
 
 class Book(Base):
-    
+
     __tablename__ = "books"
 
 
@@ -85,7 +85,7 @@ class IssuedBook(Base):
         CheckConstraint(
             "status IN ('Issued', 'Returned')",
             name="check_status"
-        )
+        ),
     )
 
     issue_id: Mapped[int] = mapped_column(

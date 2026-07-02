@@ -1,23 +1,10 @@
 from database import SessionLocal
 from models import Book
+from crud import view_books
 
-session = SessionLocal()
+# This method is called from crud.py for viwing books
 
-books = session.query(Book).all()
+books = view_books()
 
 for book in books:
     print(book)
-
-new_book = Book(
-    title="Atomic Habits",
-    author="James Clear",
-    category="Self Help",
-    price=599,
-    pages=320,
-    edition=1,
-    available_copies=5
-)
-
-session.add(new_book)
-
-session.commit()
