@@ -2,12 +2,19 @@ from sqlalchemy import String, Integer, DECIMAL
 from sqlalchemy.orm import Mapped, mapped_column
 from decimal import Decimal
 from datetime import date
-from sqlAlchemy import Date
+from sqlAlchemy import Date, func, CheckConstraint
 
 from database import Base
 
 class Book(Base):
     __tablename__ = "books"
+
+    __table_args__ = (
+        CheckConstraint(
+            "status IN ('Issued, 'Returned')",
+            name = "check_status"
+        )
+    )
 
     book_id: Mapped[int] = mapped_column(
         Integer,
@@ -71,12 +78,20 @@ class Member(Base):
     )
 
     membership_date: Mapped[date] = mapped_column(
-        Date
+        Date,
+        server_default=func.current_date()
     )
 
 class IssuedBook(Base):
 
     __tablename__ = "issued_books"
+
+    __table_args__ = (
+        CheckConstraint(
+            "status IN ('Issued', 'Returned')",
+            name="check_status"
+        )
+    )
 
     issue_id: Mapped[int] = mapped_column(
         Integer,
@@ -92,7 +107,8 @@ class IssuedBook(Base):
     )
 
     issue_date: Mapped[date] = mapped_column(
-        Date
+        Date,
+        server_default=func.current_date()
     )
 
     return_date: Mapped[date] = mapped_column(
@@ -100,5 +116,6 @@ class IssuedBook(Base):
     )
 
     status: Mapped[str] = mapped_column(
-        String(50)
+        String(50),
+        nullable= False
     )
