@@ -7,14 +7,9 @@ from sqlAlchemy import Date, func, CheckConstraint
 from database import Base
 
 class Book(Base):
+    
     __tablename__ = "books"
 
-    __table_args__ = (
-        CheckConstraint(
-            "status IN ('Issued, 'Returned')",
-            name = "check_status"
-        )
-    )
 
     book_id: Mapped[int] = mapped_column(
         Integer,
