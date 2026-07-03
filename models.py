@@ -1,8 +1,8 @@
 from sqlalchemy import String, Integer, DECIMAL
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from decimal import Decimal
 from datetime import date
-from sqlalchemy import Date, func, CheckConstraint
+from sqlalchemy import Date, func, CheckConstraint, ForeignKey
 
 from database import Base
 
@@ -46,6 +46,8 @@ class Book(Base):
         Integer
     )
 
+    issued_books = relationship("IssuedBook", back_populates="book")
+
     def __repr__(self):
         return f"Book(id={self.book_id}, title='{self.title}', author='{self.author}')"
     
@@ -77,6 +79,8 @@ class Member(Base):
         server_default=func.current_date()
     )
 
+    issued_books = relationship("IssuedBook", back_populates="meber")
+
 class IssuedBook(Base):
 
     __tablename__ = "issued_books"
@@ -94,11 +98,13 @@ class IssuedBook(Base):
     )
 
     book_id: Mapped[int] = mapped_column(
-        Integer
+        Integer,
+        ForeignKey("books.book_id")
     )
 
     member_id: Mapped[int] = mapped_column(
-        Integer
+        Integer,
+        ForeignKey("members.member_id")
     )
 
     issue_date: Mapped[date] = mapped_column(
@@ -114,3 +120,7 @@ class IssuedBook(Base):
         String(50),
         nullable= False
     )
+
+    book = relationship("Book", back_populates="issued_books")
+
+    member = relationship("Member", back_populates="issued_books")
