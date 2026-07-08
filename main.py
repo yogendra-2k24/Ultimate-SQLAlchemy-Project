@@ -20,3 +20,10 @@ app = FastAPI()
 @app.get("/")
 def home():
     return {"message" : "Welcome to Library Management API"}
+
+
+@app.get("/about")
+def about():
+    return {
+        "message": "Library Management System Backend"
+    }
