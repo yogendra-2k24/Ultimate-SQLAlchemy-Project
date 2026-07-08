@@ -6,6 +6,7 @@ from sqlalchemy import Date, func, CheckConstraint, ForeignKey
 
 from database import Base
 
+# Mapped books Table
 class Book(Base):
 
     __tablename__ = "books"
@@ -50,7 +51,10 @@ class Book(Base):
 
     def __repr__(self):
         return f"Book(id={self.book_id}, title='{self.title}', author='{self.author}')"
-    
+
+
+# Mapped members Table
+
 class Member(Base):
 
     __tablename__ = "members"
@@ -80,6 +84,9 @@ class Member(Base):
     )
 
     issued_books = relationship("IssuedBook", back_populates="meber")
+
+
+# Mapped issued_books Table
 
 class IssuedBook(Base):
 
