@@ -27,3 +27,11 @@ def about():
     return {
         "message": "Library Management System Backend"
     }
+
+@app.get("/books")
+def get_book():
+    return {"message": "List of Books"}
+
+@app.post("/books")
+def create_book():
+    return {"message": "Book Created Successfully"}
