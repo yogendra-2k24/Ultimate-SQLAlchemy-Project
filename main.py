@@ -3,6 +3,7 @@ from models import Book
 from crud import view_books, add_book
 from fastapi import FastAPI
 from schemas import BookCreate
+import crud
 
 # This method is called from crud.py for viwing books
 
@@ -35,6 +36,4 @@ def get_book():
 
 @app.post("/books")
 def create_book(book: BookCreate):
-    return {"title": book.title,
-            "author": book.author,
-            "copies": book.copies}
+    return crud.add_book(book)
