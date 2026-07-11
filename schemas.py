@@ -3,4 +3,8 @@ from pydantic import BaseModel
 class BookCreate(BaseModel):
     title: str
     author: str
-    copies: int
+    category: str
+    price: float
+    pages: int
+    edition: int
+    available_copies: int

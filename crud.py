@@ -1,5 +1,6 @@
 from database import SessionLocal
 from models import Book, Member, IssuedBook
+from schemas import BookCreate
 
 
 # For viewing the books
@@ -21,19 +22,19 @@ def view_books():
 
 # For Adding the books
 
-def add_book(title, author, category, price, pages, edition, available_copies):
+def add_book(book_data: BookCreate):
 
     session = SessionLocal()
 
     try:
         new_book = Book(
-            title = title,
-            author = author,
-            category = category,
-            price = price,
-            pages = pages,
-            edition = edition,
-            available_copies = available_copies
+            title = book_data.title,
+            author = book_data.author,
+            category = book_data.category,
+            price = book_data.price,
+            pages = book_data.pages,
+            edition = book_data.edition,
+            available_copies = book_data.available_copies
         )
 
         session.add(new_book)
