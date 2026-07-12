@@ -39,3 +39,18 @@ def get_book():
 def create_book(book: BookCreate):
 
     return crud.add_book(book)
+
+@app.get("/books/{book_id}")
+def view_book(book_id: int):
+
+    return crud.get_book(book_id)
+
+@app.post("/books/{book_id}")
+def update_book(book_id: int, book_data: BookCreate):
+
+    return crud.update_book(book_id, book_data)
+
+@app.delete("/books/{book_id}")
+def delete_book(book_id: int):
+
+    return crud.delete_book(book_id)

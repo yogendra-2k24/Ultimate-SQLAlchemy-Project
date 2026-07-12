@@ -182,7 +182,7 @@ def get_book(book_id: int):
     try:
 
         book = session.query(Book).filter( 
-            Book.id == book_id
+            Book.book_id == book_id
         ).first()
 
         if book is None:
@@ -194,6 +194,71 @@ def get_book(book_id: int):
         
         return book
     
+    finally:
+
+        session.close()
+
+
+def update_book(book_id: int, book_data: BookCreate):
+    
+    session = SessionLocal()
+
+    try:
+
+        book = session.query(Book).filter(
+            Book.book_id == book_id
+        ).first()
+
+        if book is None:
+
+            raise HTTPException(
+                status_code=404,
+                detail="Book Not Found"
+            )
+        
+        book.title = book_data.title
+        book.author = book_data.author
+        book.category = book_data.category
+        book.price = book_data.price
+        book.pages = book_data.pages
+        book.edition = book_data.edition
+        book.available_copies = book_data.available_copies
+
+        session.commit()
+
+        session.refresh(book)
+
+        return book
+    
+    finally:
+
+        session.close()
+
+def delete_book(book_id: int):
+
+    session = SessionLocal
+
+    try:
+
+        book = session.query(Book).filter(
+            Book.book_id == book_id
+        ).first()
+
+        if book is None:
+
+            raise HTTPException(
+                status_code=404,
+                detail="Book Not Found"
+            )
+        
+        session.delete(book)
+
+        session.commit()
+
+        return {
+            "message" : "Book deleted Successfully"
+        }
+
     finally:
 
         session.close()
