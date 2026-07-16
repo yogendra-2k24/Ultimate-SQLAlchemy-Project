@@ -262,3 +262,20 @@ def delete_book(book_id: int):
     finally:
 
         session.close()
+
+
+def filter_books(category: str):
+
+    session = SessionLocal()
+
+    try:
+
+        book = session.query(Book).filter(
+            Book.category == category
+        ).all()
+
+        return book
+    
+    finally:
+
+        session.close()

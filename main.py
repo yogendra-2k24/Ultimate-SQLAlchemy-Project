@@ -35,6 +35,13 @@ def get_book():
     books = crud.view_books()
     return books
 
+
+@app.get("/books/filter", response_model=list[BookResponse])
+def filter_books(category: str):
+
+    return crud.filter_books(category)
+
+
 @app.post("/books")
 def create_book(book: BookCreate):
 
