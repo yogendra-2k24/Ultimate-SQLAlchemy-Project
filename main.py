@@ -35,6 +35,13 @@ def get_book():
     books = crud.view_books()
     return books
 
+@app.get("/books", response_model=list[BookResponse])
+def get_books(
+    category: str | None = None,
+    min_price: float | None = None
+):
+    return crud.get_books(category, min_price)
+
 
 @app.get("/books/filter", response_model=list[BookResponse])
 def filter_books(category: str):

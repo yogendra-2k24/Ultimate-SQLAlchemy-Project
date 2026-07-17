@@ -279,3 +279,30 @@ def filter_books(category: str):
     finally:
 
         session.close()
+
+
+def get_books(
+        category: str | None = None,
+        min_price: float | None = None
+):
+    session = SessionLocal()
+
+    try:
+
+        query = session.query(Book)
+
+        if category is not None:
+
+            query = query.filter(Book.category == category)
+
+        if min_price is not None:
+
+            query = query.filter(Book.price >= min_price)
+
+        books = query.all()
+
+        return books
+    
+    finally:
+
+        session.close()
