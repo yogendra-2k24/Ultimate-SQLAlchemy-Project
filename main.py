@@ -30,17 +30,15 @@ def about():
         "message": "Library Management System Backend"
     }
 
-@app.get("/books", response_model=list[BookResponse])
-def get_book():
-    books = crud.view_books()
-    return books
 
 @app.get("/books", response_model=list[BookResponse])
 def get_books(
     category: str | None = None,
-    min_price: float | None = None
+    min_price: float | None = None,
+    skip: int = 0,
+    limit: int = 10
 ):
-    return crud.get_books(category, min_price)
+    return crud.get_books(category, min_price, skip, limit)
 
 
 @app.get("/books/filter", response_model=list[BookResponse])
