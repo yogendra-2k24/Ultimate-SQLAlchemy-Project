@@ -3,7 +3,7 @@ from models import Book
 from crud import view_books, add_book, create_access_token
 from fastapi import FastAPI, Depends, HTTPException
 from schemas import BookCreate, BookResponse, UserCreate, UserLogin
-import crud
+import crud, auth
 from sqlalchemy.orm import Session
 from auth import verify_password
 
@@ -79,7 +79,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 @app.post("/login")
 def login(login_user: UserLogin, db: Session = Depends(get_db)):
 
-    db_user = crud.authenticate_user(db, login_user.username)
+    db_user = auth.authenticate_user(db, login_user.username)
 
     if db_user is None:
 
