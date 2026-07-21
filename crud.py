@@ -3,7 +3,14 @@ from models import Book, Member, IssuedBook, User
 from schemas import BookCreate
 from fastapi import HTTPException
 from auth import hash_password
+from sqlalchemy.orm import Session
+from datetime import datetime, timedelta, timezone
+from jose import jwt
 
+
+SECRET_KEY = "my_secret_key"
+ALGORITHM = "HS256"
+ACCESS_TOKE_EXPIRE_MINUTES = 30
 
 # For viewing the books
 
@@ -362,3 +369,35 @@ def create_user(db, user):
     db.refresh(db_user)
 
     return db_user
+
+
+def authenticate_user(db: Session, username: str):
+
+    user = (
+    db.query(User)
+      .filter(User.username == username)
+      .first()
+    )
+
+    return user
+
+
+def create_access_token(data: dict):
+
+    # original dictionary data would'nt be change
+    to_encode = data.copy()
+
+    # Expiry time
+    expire = datetime.now(timezone.utc)+ timedelta(minutes = ACCESS_TOKE_EXPIRE_MINUTES)
+
+    # Added Expiry Time
+    to_encode["exp"] = expire
+
+    # Create JWT
+    encode_jwt = jwt.encode(
+        to_encode,
+        SECRET_KEY,
+        algorithm=ALGORITHM
+    )
+
+    return encode_jwt

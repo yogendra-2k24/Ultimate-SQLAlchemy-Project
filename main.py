@@ -1,10 +1,11 @@
 from database import SessionLocal, get_db
 from models import Book
-from crud import view_books, add_book
-from fastapi import FastAPI, Depends
-from schemas import BookCreate, BookResponse, UserCreate
+from crud import view_books, add_book, create_access_token
+from fastapi import FastAPI, Depends, HTTPException
+from schemas import BookCreate, BookResponse, UserCreate, UserLogin
 import crud
 from sqlalchemy.orm import Session
+from auth import verify_password
 
 # This method is called from crud.py for viwing books
 
@@ -74,3 +75,35 @@ def delete_book(book_id: int):
 @app.post("/register")
 def register(user: UserCreate, db: Session = Depends(get_db)):
     return crud.create_user(db, user)
+
+@app.post("/login")
+def login(login_user: UserLogin, db: Session = Depends(get_db)):
+
+    db_user = crud.authenticate_user(db, login_user.username)
+
+    if db_user is None:
+
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid username or password"
+        )
+    
+    if not verify_password(
+        login_user.password, db_user.hashed_password
+    ):
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid username or password"
+        )
+    
+    access_token = create_access_token(
+        data = {
+            "sub": db_user.username
+        }
+    )
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
+
