@@ -4,7 +4,14 @@ import crud
 from models import User
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta, timezone
-from fastapi import HTTPException
+from fastapi import Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer
+from database import get_db
+
+
+outh2_scheme = OAuth2PasswordBearer(
+    tokenUrl="login"
+)
 
 
 SECRET_KEY = "my_secret_key"
@@ -60,8 +67,8 @@ def verify_access_token(token: str):
 
     payload = jwt.decode(
         token,
-        crud.SECRET_KEY,
-        algorithm=crud.ALGORITHM
+        SECRET_KEY,
+        algorithms=[ALGORITHM]
 
     )
 
@@ -72,7 +79,7 @@ def verify_access_token(token: str):
     
     return user_id
 
-def get_current_user(token: str, db: Session):
+def get_current_user(token: str = Depends(outh2_scheme), db: Session = Depends(get_db)):
 
     user_id = verify_access_token(token)
 

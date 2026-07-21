@@ -1,11 +1,11 @@
 from database import SessionLocal, get_db
-from models import Book
-from crud import view_books, add_book, create_access_token
+from models import Book, User
 from fastapi import FastAPI, Depends, HTTPException
 from schemas import BookCreate, BookResponse, UserCreate, UserLogin
 import crud, auth
 from sqlalchemy.orm import Session
-from auth import verify_password
+from auth import verify_password, get_current_user
+from fastapi.security import OAuth2PasswordRequestForm
 
 # This method is called from crud.py for viwing books
 
@@ -77,9 +77,9 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     return crud.create_user(db, user)
 
 @app.post("/login")
-def login(login_user: UserLogin, db: Session = Depends(get_db)):
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
 
-    db_user = auth.authenticate_user(db, login_user.username)
+    db_user = auth.authenticate_user(db, form_data.username)
 
     if db_user is None:
 
@@ -89,14 +89,14 @@ def login(login_user: UserLogin, db: Session = Depends(get_db)):
         )
     
     if not verify_password(
-        login_user.password, db_user.hashed_password
+        form_data.password, db_user.hashed_password
     ):
         raise HTTPException(
             status_code=401,
             detail="Invalid username or password"
         )
     
-    access_token = create_access_token(
+    access_token = auth.create_access_token(
         data = {
             "sub": str(db_user.user_id)
         }
@@ -107,3 +107,9 @@ def login(login_user: UserLogin, db: Session = Depends(get_db)):
         "token_type": "bearer"
     }
 
+
+@app.get("/me")
+def me(
+    current_user: User = Depends(get_current_user)
+):
+    return current_user
