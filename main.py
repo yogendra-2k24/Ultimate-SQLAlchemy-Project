@@ -1,7 +1,7 @@
-from database import SessionLocal, get_db
-from models import Book, User
+from database import get_db
+from models import User
 from fastapi import FastAPI, Depends, HTTPException
-from schemas import BookCreate, BookResponse, UserCreate, UserLogin
+from schemas import BookCreate, BookResponse, UserCreate, UserResponse
 import crud, auth
 from sqlalchemy.orm import Session
 from auth import verify_password, get_current_user
@@ -72,7 +72,7 @@ def delete_book(book_id: int):
     return crud.delete_book(book_id)
 
 
-@app.post("/register")
+@app.post("/register", response_model=UserResponse)
 def register(user: UserCreate, db: Session = Depends(get_db)):
     return crud.create_user(db, user)
 
@@ -108,8 +108,12 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     }
 
 
-@app.get("/me")
+@app.get("/me", response_model=UserResponse)
 def me(
     current_user: User = Depends(get_current_user)
 ):
-    return current_user
+    return {
+        "user_id": current_user.user_id,
+        "username": current_user.username,
+        "email": current_user.email
+    }

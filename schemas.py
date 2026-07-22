@@ -23,11 +23,13 @@ class BookResponse(BaseModel):
     "from_attributes": True
     }
 
-class UserCreate(BaseModel):
+
+class UserBase(BaseModel):
     username: str
-    email: EmailStr
+    email: EmailStr    
+
+class UserCreate(UserBase):
     password: str
 
-class UserLogin(BaseModel):
-    username: str
-    password: str
+class UserResponse(UserBase):
+    user_id: int

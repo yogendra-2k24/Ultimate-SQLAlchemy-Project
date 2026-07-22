@@ -16,7 +16,7 @@ outh2_scheme = OAuth2PasswordBearer(
 
 SECRET_KEY = "my_secret_key"
 ALGORITHM = "HS256"
-ACCESS_TOKE_EXPIRE_MINUTES = 30
+ACCESS_TOKE_EXPIRE_MINUTES = 1440
 
 
 pwd_context = CryptContext(
