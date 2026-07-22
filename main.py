@@ -52,7 +52,7 @@ def filter_books(category: str):
 
 
 @app.post("/books")
-def create_book(book: BookCreate):
+def create_book(book: BookCreate, current_user: User = Depends(get_current_user)):
 
     return crud.add_book(book)
 
@@ -117,3 +117,7 @@ def me(
         "username": current_user.username,
         "email": current_user.email
     }
+
+@app.post("/return/{issue_id}")
+def return_book(issue_id: int):
+    return crud.return_book(issue_id)

@@ -175,6 +175,49 @@ def issue_book(book_id, member_id):
 
         session.close()
 
+
+def return_book(issue_id: int):
+
+    session = SessionLocal()
+
+    try:
+
+        issued_book = session.query(IssuedBook).filter(
+            IssuedBook.issue_id == issue_id
+        ).first()
+
+        if issued_book is None:
+
+            raise HTTPException(
+                status_code=404,
+                detail="Invalid Book_Id / Book not found"
+            )
+
+        if issued_book.status == "Returned":
+
+            raise HTTPException(
+                status_code=409,
+                detail="Error, already returned"
+            )
+
+        issued_book.status = "Returned"
+
+        book = session.query(Book).filter(Book.book_id == issued_book.book_id).first()
+
+        book.available_copies = book.available_copies + 1
+
+        session.commit()
+
+    finally:
+
+        session.close()
+
+    return {
+        "Book Returned Successfully"
+    }
+
+
+
 def get_book(book_id: int):
 
     session = SessionLocal()
@@ -236,7 +279,7 @@ def update_book(book_id: int, book_data: BookCreate):
 
 def delete_book(book_id: int):
 
-    session = SessionLocal
+    session = SessionLocal()
 
     try:
 
