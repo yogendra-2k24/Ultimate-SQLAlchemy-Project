@@ -1,23 +1,21 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
-class BookCreate(BaseModel):
+
+class BookBase(BaseModel):
     title: str
     author: str
     category: str
-    price: float
-    pages: int
-    edition: int
-    available_copies: int
+    price: float = Field(gt=0)
+    pages: int = Field(gt=0)
+    edition: int = Field(gt=0)
+    available_copies: int = Field(ge=0)
 
-class BookResponse(BaseModel):
+class BookCreate(BookBase):
+   pass
 
-    title: str
-    author: str
-    category: str
-    price: float
-    pages: int
-    edition: int
-    available_copies: int
+class BookResponse(BookBase):
+
+    book_id: int
 
     model_config = {
     "from_attributes": True

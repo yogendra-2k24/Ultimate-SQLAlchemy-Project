@@ -51,7 +51,7 @@ def filter_books(category: str):
     return crud.filter_books(category)
 
 
-@app.post("/books")
+@app.post("/books", response_model=BookResponse)
 def create_book(book: BookCreate, current_user: User = Depends(get_current_user)):
 
     return crud.add_book(book)
@@ -61,7 +61,7 @@ def view_book(book_id: int):
 
     return crud.get_book(book_id)
 
-@app.post("/books/{book_id}")
+@app.put("/books/{book_id}")
 def update_book(book_id: int, book_data: BookCreate):
 
     return crud.update_book(book_id, book_data)
@@ -121,3 +121,10 @@ def me(
 @app.post("/return/{issue_id}")
 def return_book(issue_id: int):
     return crud.return_book(issue_id)
+
+
+@app.get("/member/{member_id}")
+def get_member(member_id: int):
+    member = crud.get_member(member_id)
+    # print(member.issued_books)
+    return member

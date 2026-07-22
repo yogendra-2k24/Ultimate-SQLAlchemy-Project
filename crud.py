@@ -404,3 +404,19 @@ def create_user(db, user):
     db.refresh(db_user)
 
     return db_user
+
+
+def get_member(member_id: int):
+
+    session = SessionLocal()
+
+    member = session.query(Member).filter(Member.member_id == member_id).first()
+
+    if member is None:
+
+        raise HTTPException(
+            status_code=404,
+            detail="Member Not found"
+        )
+
+    return member
